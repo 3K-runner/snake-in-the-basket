@@ -13,11 +13,11 @@ const distance  = position1 =>  position2 => Math.trunc((position2.x - position1
 // Finds the smallest distance in relation to the birds
 const orderMoves = moves => targetPosition => birdPosition => {
   
-// List of the distances
-const distances = moves.map(move => distance(targetPosition)({ x: birdPosition.x + move.x, y: birdPosition.y + move.y}))
+  // List of the distances
+  const distances = moves.map(move => distance(targetPosition)({ x: birdPosition.x + move.x, y: birdPosition.y + move.y}))
 
- // Order the moves by their distances 
-const movementInOrder = [...moves].sort((a, b) => distances[moves.indexOf(a)] - distances[moves.indexOf(b)])
+  // Order the moves by their distances 
+  const movementInOrder = [...moves].sort((a, b) => distances[moves.indexOf(a)] - distances[moves.indexOf(b)])
 
   return movementInOrder;
 }
