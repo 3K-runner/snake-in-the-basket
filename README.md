@@ -5,7 +5,7 @@ A game inspired by the classic PAC-MAN implemented with functional style in Java
 
 # Usage
 
-- Play the [game](https://3k-runner.github.io/projeto-jogo/).
+- Play the [game](https://3k-runner.github.io/snake-in-the-basket/).
 - Watch the [game instructions]( https://youtu.be/uCuSrgKWz3E?feature=shared ) video.
 
 # How to play
