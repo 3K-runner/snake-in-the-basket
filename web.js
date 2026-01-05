@@ -174,7 +174,7 @@ window.addEventListener('keydown', e => {
   const keyPattern = [NORTH, WEST, SOUTH, EAST];
   const keyBidings = [
     ["w", "a", "s", "d"],
-    ["i", "j", "k", "l"]
+    ["h", "j", "k", "l"]
   ];
   // Find triggered moves and enqueue them.
   // OBS: Each key press should trigger on only one bidding, but this can handle multiple.
