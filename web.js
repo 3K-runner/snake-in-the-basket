@@ -1,5 +1,7 @@
-const sprites = require("./sprites")
-Object.getOwnPropertyNames(sprites).map(p => global[p] = sprites[p])
+const snake_js = require("./snake");
+Object.getOwnPropertyNames(snake_js).map(p => global[p] = snake_js[p]);
+const sprites_js = require("./sprites");
+Object.getOwnPropertyNames(sprites_js).map(p => global[p] = sprites_js[p]);
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
@@ -13,11 +15,18 @@ const FRAME_RATE = 240
 // Mutable state
 let state = initialState()
 
+// Canvas dimensions
+const CANVAS_WIDTH  = canvas.width;
+const CANVAS_HEIGHT = canvas.height;
+// Size of each grid cell
+const GRID_WITH   = Math.round(CANVAS_WIDTH / (COLS + 1));
+const GRID_HEIGHT = Math.round(CANVAS_HEIGHT / ROWS);
+
 // Position helpers
 // for entire square
 // -Takes a coordinate and resizes it for the canvas 
-const x = c => Math.round(c * canvas.width / (COLS + 1)) 
-const y = r => Math.round(r * canvas.height / ROWS) 
+const x = col => Math.round(col * GRID_WITH)
+const y = row => Math.round(row * GRID_HEIGHT)
 // for grid art
 // -Takes a coordinate and applies the grid on it
 const xg = bc => c => x(bc.x + c.x/BITS) 
@@ -49,7 +58,7 @@ const drawBird = state => (birdSprite, frightMask) => birdIndex => {
 const draw = state => {
   // clear
   ctx.fillStyle = 'rgb(0, 0, 0)'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
   
   // Draw lives
   state.lives.map(drawSprite(LIVE));
@@ -57,15 +66,15 @@ const draw = state => {
   // Check crash/loose or win game states before drawing:
   // - Paths
   // - Maze
-  // - Snake
-  // - Birds
   // - Apples
   // - Eggs
+  // - Snake
+  // - Birds
 
   // add crash
   if (state.snake.length == 0){
     ctx.fillStyle = 'rgb(255,0,0)';
-    ctx.fillRect(0, 0, x(COLS), canvas.height);
+    ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT);
 
     return ;
   }
@@ -73,18 +82,18 @@ const draw = state => {
   if ((state.apples.length == 0) && (state.eggs.length == 0)){
     // If all apples have been collected, the screen flashes green
     ctx.fillStyle = 'rgb(0,255,0)'
-    ctx.fillRect(0, 0, x(COLS), canvas.height);
+    ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT);
 
     return ;
   }
 
   // draw paths
   ctx.fillStyle = 'rgb(96, 64, 32)'
-  ctx.fillRect(0, 0, x(COLS), canvas.height)
+  ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT)
   
   // draw maze
-  // - Walls dont fill the grid by default.
-  // - Fill is added by the type:
+  // - Walls have padding (visual) by default.
+  // - Join fill is added by the type:
   //   0: No fill
   //   1: Fill on north and west
   //   2: Fill on west
@@ -118,14 +127,14 @@ const draw = state => {
     //Details
     drawSprite(BASKET)(p1);
   })
-  WALLS[2].map(p1 => {
+  BERRY_MASKS[0].map(p1 => {
     //2x2 "pixels"
     ctx.fillStyle = 'rgb(30,30,255)'
     BLUEBERRY.map(p2 => {
       ctx.fillRect(xg(p1)(p2), yg(p1)(p2), x(2/BITS), y(2/BITS))
     })
   })
-  WALLS[3].map(p1 => {
+  BERRY_MASKS[1].map(p1 => {
     //2x3 "pixels"
     RASPBERRY.map(p2 => {
       ctx.fillStyle = p2.colour
@@ -150,27 +159,32 @@ const draw = state => {
 }
 // Game loop update
 const step = t1 => t2 => {
+  const stepToUse = (t2 - t1 > FRAME_RATE) ? t2 : t1;
   if (t2 - t1 > FRAME_RATE) {
     state = next(state);
     draw(state);
-    window.requestAnimationFrame(step(t2))
-  } else {
-    window.requestAnimationFrame(step(t1))
   }
+  window.requestAnimationFrame(step(stepToUse));
 }
 
-// Key events
+// Key events (Procedure)
 window.addEventListener('keydown', e => {
-  switch (e.key) {
-    case 'w': case 'h':  state = enqueue(state, NORTH); break
-    case 'a': case 'j':  state = enqueue(state, WEST);  break
-    case 's': case 'k':  state = enqueue(state, SOUTH); break
-    case 'd': case 'l':  state = enqueue(state, EAST);  break
-    default:
-    e.preventDefault()
-    return
-  }
-})
+  e.preventDefault();
+
+  const keyPattern = [NORTH, WEST, SOUTH, EAST];
+  const keyBidings = [
+    ["w", "a", "s", "d"],
+    ["i", "j", "k", "l"]
+  ];
+  // Find triggered moves and enqueue them.
+  // OBS: Each key press should trigger on only one bidding, but this can handle multiple.
+  keyBidings.reduce((acc, keys) => {
+    const moveIndex = keys.indexOf(e.key.toLowerCase());
+    return (moveIndex != -1) ? acc.concat([keyPattern[moveIndex]]) : acc;
+  }, []).map(move => {
+    state = enqueue(state, move);
+  });
+});
 
 // Main
 draw(state); window.requestAnimationFrame(step(0))
