@@ -142,6 +142,12 @@ const draw = state => {
     })
   })
 
+  // Draw apples
+  state.apples.map(drawSprite(APPLE));
+
+  // Draw eggs
+  state.eggs.map(drawSprite(EGG));
+
   // draw snake
   drawSprite(SNAKE)(state.snake[0]);
 
@@ -150,12 +156,6 @@ const draw = state => {
   drawBird(state)(SECY, SECYSCARED)(1);
   drawBird(state)(GUINE, GUINESCARED)(2);
   drawBird(state)(OWL, OWLSCARED)(3);
-
-  // Draw apples
-  state.apples.map(drawSprite(APPLE));
-
-  // Draw eggs
-  state.eggs.map(drawSprite(EGG));
 }
 // Game loop update
 const step = t1 => t2 => {
