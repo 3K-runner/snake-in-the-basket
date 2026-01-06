@@ -6,6 +6,9 @@ Object.getOwnPropertyNames(sprites_js).map(p => global[p] = sprites_js[p]);
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+// Disable image smoothing for pixelated effect on ImageBitmaps
+ctx.imageSmoothingEnabled = false;
+
 // Constant that represents the art grid size
 const BITS = 16
 
@@ -24,44 +27,38 @@ const GRID_HEIGHT = Math.round(CANVAS_HEIGHT / ROWS);
 
 // Position helpers
 // for entire square
-// -Takes a coordinate and resizes it for the canvas 
+// -Takes a coordinate and resizes it for the canvas
 const x = col => Math.round(col * GRID_WITH)
 const y = row => Math.round(row * GRID_HEIGHT)
-// for grid art
-// -Takes a coordinate and applies the grid on it
-const xg = bc => c => x(bc.x + c.x/BITS) 
-const yg = br => r => y(br.y + r.y/BITS)
 
-// Draws a sprite on a position
-const drawSprite = sprite => position => {
-  sprite.map(p => {
-    ctx.fillStyle = p.colour;
-    ctx.fillRect(
-      xg(position)(p), yg(position)(p),
-      x(p.l/BITS), y(1/BITS));
-  });
-};
+// Draws a ImageBitmap sprite on a position
+const drawImageBitmapSprite = sprite => position => {
+  ctx.drawImage(
+	  sprite,
+	  x(position.x), y(position.y),
+	  GRID_WITH, GRID_HEIGHT
+  );
+}
 
-// Draws a bird
-const drawBird = state => (birdSprite, frightMask) => birdIndex => {
+const drawBird = state => sprites => (birdName, birdIndex) => {
   const birdCoord = state.birds[birdIndex];
 
   // Draw the main sprite
-  drawSprite(birdSprite)(birdCoord);
+  drawImageBitmapSprite(sprites[birdName])(birdCoord)
   // Add the mask if frightened
   if (isFrightened(state)(birdIndex)){
-    drawSprite(frightMask)(birdCoord);
+    drawImageBitmapSprite(sprites[birdName+"SCARED"])(birdCoord);
   }
 };
 
 // Game loop draw
-const draw = state => {
+const draw = sprites => state => {
   // clear
   ctx.fillStyle = 'rgb(0, 0, 0)'
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
   
   // Draw lives
-  state.lives.map(drawSprite(LIVE));
+  state.lives.map(drawImageBitmapSprite(sprites["LIVE"]));
 
   // Check crash/loose or win game states before drawing:
   // - Paths
@@ -99,72 +96,49 @@ const draw = state => {
   //   2: Fill on west
   //   3: Fill on north
   WALLS[0].map(p1 => {
-    SPRITE_WALL.map(p2 => {
-      ctx.fillStyle = p2.colour
-      ctx.fillRect(xg(p1)(p2), yg(p1)(p2), x(p2.l/BITS), y(p2.l/BITS))
-    })
-    switch (p1.type) {
-    case 0:
-    	break;
-    case 1:
-      drawSprite(WALL_NORTH)(p1);
-    case 2:
-    WALL_WEST.map(p2 => {
-      ctx.fillStyle = p2.colour
-      ctx.fillRect(xg(p1)(p2), yg(p1)(p2), x(4/BITS), y(p2.l/BITS))
-    })
-      break;
-    case 3:
-      drawSprite(WALL_NORTH)(p1);
-      break;
+    // Main wall
+    drawImageBitmapSprite(sprites["WALL"])(p1);
+
+    // Add wall fills based on type
+    if ([1,3].includes(p1.type)) {
+      drawImageBitmapSprite(sprites["WALL_UP_FILL"])(
+        makeMove(p1)({ x: 0, y: -1/2 })
+      )
+    }
+    if ([1,2].includes(p1.type)) {
+      drawImageBitmapSprite(sprites["WALL_SIDE_FILL"])(
+        makeMove(p1)({ x: -1/2, y: 0 })
+      )
     }
   })
-  WALLS[1].map(p1 => {
-    //Basic colour
-    ctx.fillStyle = 'rgb(233,233,140)'
-    ctx.fillRect(x(p1.x), y(p1.y), x(1), y(1))
-    
-    //Details
-    drawSprite(BASKET)(p1);
-  })
-  BERRY_MASKS[0].map(p1 => {
-    //2x2 "pixels"
-    ctx.fillStyle = 'rgb(30,30,255)'
-    BLUEBERRY.map(p2 => {
-      ctx.fillRect(xg(p1)(p2), yg(p1)(p2), x(2/BITS), y(2/BITS))
-    })
-  })
-  BERRY_MASKS[1].map(p1 => {
-    //2x3 "pixels"
-    RASPBERRY.map(p2 => {
-      ctx.fillStyle = p2.colour
-      ctx.fillRect(xg(p1)(p2), yg(p1)(p2), x(2/BITS), y(1/BITS))
-    })
-  })
-
-  // draw snake
-  drawSprite(SNAKE)(state.snake[0]);
-
-  // draw Birds
-  drawBird(state)(EAGLE, EAGLESCARED)(0);
-  drawBird(state)(SECY, SECYSCARED)(1);
-  drawBird(state)(GUINE, GUINESCARED)(2);
-  drawBird(state)(OWL, OWLSCARED)(3);
+  WALLS[1].map(drawImageBitmapSprite(sprites["BASKET"]))
+  // Masks for berry bushes
+  BERRY_MASKS[0].map(drawImageBitmapSprite(sprites["BLUEBERRY"]))
+  BERRY_MASKS[1].map(drawImageBitmapSprite(sprites["RASPBERRY"]))
 
   // Draw apples
-  state.apples.map(drawSprite(APPLE));
+  state.apples.map(drawImageBitmapSprite(sprites["APPLE"]));
 
   // Draw eggs
-  state.eggs.map(drawSprite(EGG));
+  state.eggs.map(drawImageBitmapSprite(sprites["EGG"]));
+
+  // Draw snake
+  drawImageBitmapSprite(sprites["SNAKE"])(state.snake[0]);
+
+  // Draw birds
+  ["EAGLE", "SECY", "GUINE", "OWL"].map(
+    drawBird(state)(sprites)
+  );
 }
+
 // Game loop update
-const step = t1 => t2 => {
+const step = sprites => t1 => t2 => {
   const stepToUse = (t2 - t1 > FRAME_RATE) ? t2 : t1;
   if (t2 - t1 > FRAME_RATE) {
     state = next(state);
-    draw(state);
-  }
-  window.requestAnimationFrame(step(stepToUse));
+    draw(sprites)(state);
+  } 
+  window.requestAnimationFrame(step(sprites)(stepToUse));
 }
 
 // Key events (Procedure)
@@ -187,4 +161,7 @@ window.addEventListener('keydown', e => {
 });
 
 // Main
-draw(state); window.requestAnimationFrame(step(0))
+// - Wait for sprites to load before starting the game loop
+SPRITES(BITS).then(sprites => {
+  draw(sprites)(state); window.requestAnimationFrame(step(sprites)(0));
+});

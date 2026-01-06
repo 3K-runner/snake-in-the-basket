@@ -399,4 +399,4 @@ const next = state => state.snake.length == 0
 const enqueue = (state, move) => (state.moves.length < 4) ? merge(state)({ moves: state.moves.concat([move]) })
   : state
 
-module.exports = { COLS, ROWS, EAST, NORTH, SOUTH, WEST, WALLS, BERRY_MASKS, initialState, enqueue, next }
+module.exports = { COLS, ROWS, EAST, NORTH, SOUTH, WEST, WALLS, BERRY_MASKS, initialState, makeMove, enqueue, next }
