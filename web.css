@@ -9,7 +9,16 @@ html, body {
 
 .header {
   background-color: #333;
+  height: 5.0vw;
   padding: 10px 0;
+}
+@media(max-width: 640px) {
+  .header {
+    height: 8.2vw; 
+  }
+}
+.header img {
+  height: 100%;
 }
 
 #spritesheet {
@@ -19,19 +28,38 @@ html, body {
 .container {
   display: flex;
   justify-content: space-between;
-  width: 900px;
+  height: auto;
+  width: round(66.6%, 16px);
   margin: 20px auto;
+}
+
+.container .white-border {
+  border: 2px solid #fff;
 }
 
 .game {
   flex: 1;
-  border: 2px solid #fff;
+  width: auto;
 }
 
 .instructions {
-  flex-basis: 200px; 
   background-color: #333;
   padding: 20px;
   text-align: left;
-  border: 2px solid #fff;
+  height: 100%;
+  width: 23.8%;
+  padding: 1.9%;
+  box-sizing: border-box;
+}
+
+#canvas {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+}
+
+.instructions img {
+  width: 100%;
+}
+.instructions .half img {
+  width: calc(50% - 2.6px);
 }
