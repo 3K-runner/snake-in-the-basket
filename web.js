@@ -90,22 +90,21 @@ const draw = sprites => state => {
   
   // draw maze
   // - Walls have padding (visual) by default.
-  // - Join fill is added by the type:
-  //   0: No fill
-  //   1: Fill on north and west
-  //   2: Fill on west
-  //   3: Fill on north
+  // - Join fill is added to the wall if:
+  //   - Wall exists north of it: WALL_UP_FILL
+  //   - Wall exists west of it: WALL_SIDE_FILL
   WALLS[0].map(p1 => {
+    const findPosition = position => WALLS[0].findIndex(p => p.x === position.x && p.y === position.y) !== -1;
     // Main wall
     drawImageBitmapSprite(sprites["WALL"])(p1);
 
-    // Add wall fills based on type
-    if ([1,3].includes(p1.type)) {
+    // Add wall fills to connect to other walls
+    if (findPosition(makeMove(p1)(NORTH))) {
       drawImageBitmapSprite(sprites["WALL_UP_FILL"])(
         makeMove(p1)({ x: 0, y: -1/2 })
       )
     }
-    if ([1,2].includes(p1.type)) {
+    if (findPosition(makeMove(p1)(WEST))) {
       drawImageBitmapSprite(sprites["WALL_SIDE_FILL"])(
         makeMove(p1)({ x: -1/2, y: 0 })
       )

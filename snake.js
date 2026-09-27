@@ -14,84 +14,84 @@ const STOP  = { x: 0, y: 0 } // Move Stop
 // position
 const WALLS  = [
   // Bush walls
-  [{ x: 0, y: 0, type: 0 }, { x: 1, y: 0, type: 2 }, 
-   { x: 2, y: 0, type: 2 }, { x: 3, y: 0, type: 2 },
-   { x: 4, y: 0, type: 2 }, { x: 5, y: 0, type: 2 }, 
-   { x: 6, y: 0, type: 2 }, { x: 7, y: 0, type: 2 },
-   { x: 8, y: 0, type: 2 }, { x: 9, y: 0, type: 2 },
-   { x:10, y: 0, type: 2 }, { x:11, y: 0, type: 2 },
-   { x:12, y: 0, type: 2 }, { x:13, y: 0, type: 2 },
-   { x:14, y: 0, type: 2 }, { x:15, y: 0, type: 2 },
-   { x:16, y: 0, type: 2 }, { x:17, y: 0, type: 2 },
-   { x:18, y: 0, type: 2 }, { x:19, y: 0, type: 2 },
+  [{ x: 0, y: 0 }, { x: 1, y: 0 },
+    { x: 2, y: 0 }, { x: 3, y: 0 },
+    { x: 4, y: 0 }, { x: 5, y: 0 },
+    { x: 6, y: 0 }, { x: 7, y: 0 },
+    { x: 8, y: 0 }, { x: 9, y: 0 },
+    { x:10, y: 0 }, { x:11, y: 0 },
+    { x:12, y: 0 }, { x:13, y: 0 },
+    { x:14, y: 0 }, { x:15, y: 0 },
+    { x:16, y: 0 }, { x:17, y: 0 },
+    { x:18, y: 0 }, { x:19, y: 0 },
    
-   { x: 0, y: 1, type: 3 }, { x:19, y: 1, type: 3 },
+    { x: 0, y: 1 }, { x:19, y: 1 },
+
+    { x: 0, y: 2 }, { x: 2, y: 2 },
+    { x: 3, y: 2 }, { x: 5, y: 2 },
+    { x: 8, y: 2 }, { x: 9, y: 2 },
+    { x:10, y: 2 }, { x:11, y: 2 },
+    { x:14, y: 2 }, { x:16, y: 2 },
+    { x:17, y: 2 }, { x:19, y: 2 },
    
-   { x: 0, y: 2, type: 3 }, { x: 2, y: 2, type: 0 },
-   { x: 3, y: 2, type: 2 }, { x: 5, y: 2, type: 0 },
-   { x: 8, y: 2, type: 0 }, { x: 9, y: 2, type: 2 },
-   { x:10, y: 2, type: 2 }, { x:11, y: 2, type: 2 },
-   { x:14, y: 2, type: 0 }, { x:16, y: 2, type: 0 },
-   { x:17, y: 2, type: 2 }, { x:19, y: 2, type: 3 },
+    { x: 0, y: 3 }, { x: 2, y: 3 },
+    { x: 3, y: 3 }, { x: 5, y: 3 },
+    { x: 6, y: 3 }, { x: 8, y: 3 },
+    { x: 9, y: 3 }, { x:10, y: 3 },
+    { x:11, y: 3 }, { x:13, y: 3 },
+    { x:14, y: 3 }, { x:16, y: 3 },
+    { x:17, y: 3 }, { x:19, y: 3 },
    
-   { x: 0, y: 3, type: 3 }, { x: 2, y: 3, type: 3 },
-   { x: 3, y: 3, type: 1 }, { x: 5, y: 3, type: 3 },
-   { x: 6, y: 3, type: 2 }, { x: 8, y: 3, type: 3 }, 
-   { x: 9, y: 3, type: 1 }, { x:10, y: 3, type: 1 }, 
-   { x:11, y: 3, type: 1 }, { x:13, y: 3, type: 0 },
-   { x:14, y: 3, type: 1 }, { x:16, y: 3, type: 3 },
-   { x:17, y: 3, type: 1 }, { x:19, y: 3, type: 3 },
+    { x: 0, y: 4 }, { x: 5, y: 4 },
+    { x:14, y: 4 }, { x:19, y: 4 },
    
-   { x: 0, y: 4, type: 3 }, { x: 5, y: 4, type: 3 },
-   { x:14, y: 4, type: 3 }, { x:19, y: 4, type: 3 },
+    { x: 0, y: 5 }, { x: 1, y: 5 },
+    { x: 2, y: 5 }, { x: 3, y: 5 },
+    { x: 5, y: 5 }, { x:14, y: 5 },
+    { x:16, y: 5 }, { x:17, y: 5 },
+    { x:18, y: 5 }, { x:19, y: 5 },
    
-   { x: 0, y: 5, type: 3 }, { x: 1, y: 5, type: 2 },
-   { x: 2, y: 5, type: 2 }, { x: 3, y: 5, type: 2 },
-   { x: 5, y: 5, type: 3 }, { x:14, y: 5, type: 3 },
-   { x:16, y: 5, type: 0 }, { x:17, y: 5, type: 2 },
-   { x:18, y: 5, type: 2 }, { x:19, y: 5, type: 1 },
+    { x: 0, y: 7 }, { x: 2, y: 7 },
+    { x: 3, y: 7 }, { x: 5, y: 7 },
+    { x: 6, y: 7 }, { x:13, y: 7 },
+    { x:14, y: 7 }, { x:16, y: 7 },
+    { x:17, y: 7 }, { x:19, y: 7 },
    
-   { x: 0, y: 7, type: 0 }, { x: 2, y: 7, type: 0 },
-   { x: 3, y: 7, type: 2 }, { x: 5, y: 7, type: 0 },
-   { x: 6, y: 7, type: 2 }, { x:13, y: 7, type: 0 },
-   { x:14, y: 7, type: 2 }, { x:16, y: 7, type: 0 },
-   { x:17, y: 7, type: 2 }, { x:19, y: 7, type: 0 },
+    { x: 0, y: 8 }, { x:19, y: 8 },
    
-   { x: 0, y: 8, type: 3 }, { x:19, y: 8, type: 3 },
+    { x: 0, y: 9 }, { x: 1, y: 9 },
+    { x: 3, y: 9 }, { x: 5, y: 9 },
+    { x: 7, y: 9 }, { x: 8, y: 9 },
+    { x: 9, y: 9 }, { x:10, y: 9 },
+    { x:11, y: 9 }, { x:12, y: 9 },
+    { x:14, y: 9 }, { x:16, y: 9 },
+    { x:18, y: 9 }, { x:19, y: 9 },
    
-   { x: 0, y: 9, type: 3 }, { x: 1, y: 9, type: 2 },
-   { x: 3, y: 9, type: 0 }, { x: 5, y: 9, type: 0 },
-   { x: 7, y: 9, type: 0 }, { x: 8, y: 9, type: 2 }, 
-   { x: 9, y: 9, type: 2 }, { x:10, y: 9, type: 2 }, 
-   { x:11, y: 9, type: 2 }, { x:12, y: 9, type: 2 },
-   { x:14, y: 9, type: 0 }, { x:16, y: 9, type: 0 },
-   { x:18, y: 9, type: 0 }, { x:19, y: 9, type: 1 },
+    { x: 0, y:10 }, { x: 5, y:10 },
+    { x: 9, y:10 }, { x:10, y:10 },
+    { x:14, y:10 }, { x:19, y:10 },
    
-   { x: 0, y:10, type: 3 }, { x: 5, y:10, type: 3 },
-   { x: 9, y:10, type: 3 }, { x:10, y:10, type: 3 },
-   { x:14, y:10, type: 3 }, { x:19, y:10, type: 3 },
+    { x: 0, y:11 }, { x: 2, y:11 },
+    { x: 3, y:11 }, { x: 4, y:11 },
+    { x: 5, y:11 }, { x: 6, y:11 },
+    { x: 7, y:11 }, { x: 9, y:11 },
+    { x:10, y:11 }, { x:12, y:11 },
+    { x:13, y:11 }, { x:14, y:11 },
+    { x:15, y:11 }, { x:16, y:11 },
+    { x:17, y:11 }, { x:19, y:11 },
    
-   { x: 0, y:11, type: 3 }, { x: 2, y:11, type: 0 },
-   { x: 3, y:11, type: 2 }, { x: 4, y:11, type: 2 },
-   { x: 5, y:11, type: 1 }, { x: 6, y:11, type: 2 },
-   { x: 7, y:11, type: 2 }, { x: 9, y:11, type: 3 },
-   { x:10, y:11, type: 1 }, { x:12, y:11, type: 0 },
-   { x:13, y:11, type: 2 }, { x:14, y:11, type: 1 },
-   { x:15, y:11, type: 2 }, { x:16, y:11, type: 2 },
-   { x:17, y:11, type: 2 }, { x:19, y:11, type: 3 },
+    { x: 0, y:12 }, { x:19, y:12 },
    
-   { x: 0, y:12, type: 3 }, { x:19, y:12, type: 3 },
-   
-   { x: 0, y:13, type: 3 }, { x: 1, y:13, type: 2 }, 
-   { x: 2, y:13, type: 2 }, { x: 3, y:13, type: 2 },
-   { x: 4, y:13, type: 2 }, { x: 5, y:13, type: 2 }, 
-   { x: 6, y:13, type: 2 }, { x: 7, y:13, type: 2 },
-   { x: 8, y:13, type: 2 }, { x: 9, y:13, type: 2 },
-   { x:10, y:13, type: 2 }, { x:11, y:13, type: 2 },
-   { x:12, y:13, type: 2 }, { x:13, y:13, type: 2 },
-   { x:14, y:13, type: 2 }, { x:15, y:13, type: 2 },
-   { x:16, y:13, type: 2 }, { x:17, y:13, type: 2 },
-   { x:18, y:13, type: 2 }, { x:19, y:13, type: 1 },],
+    { x: 0, y:13 }, { x: 1, y:13 },
+    { x: 2, y:13 }, { x: 3, y:13 },
+    { x: 4, y:13 }, { x: 5, y:13 },
+    { x: 6, y:13 }, { x: 7, y:13 },
+    { x: 8, y:13 }, { x: 9, y:13 },
+    { x:10, y:13 }, { x:11, y:13 },
+    { x:12, y:13 }, { x:13, y:13 },
+    { x:14, y:13 }, { x:15, y:13 },
+    { x:16, y:13 }, { x:17, y:13 },
+    { x:18, y:13 }, { x:19, y:13 },],
 
   // Basket
   [{ x: 7, y: 5 }, { x: 8, y: 5 }, { x:11, y: 5 }, { x:12, y: 5 }, 
@@ -341,9 +341,10 @@ const nextApple = state => state.apples.filter(wontEat(state))
 // -eggs state
 const nextEgg   = state => state.eggs.filter(wontEat(state))
 // -lives state
-const nextLives = state => {
-  return (state.lives.length > 0) ? dropFirst(state.lives) : []
-}
+const nextLives = state => state.lives.length > 0
+  ? dropFirst(state.lives)
+  : []
+
 // -time game state
 const nextTimeGame  = state => (state.timegame + 1)
 
