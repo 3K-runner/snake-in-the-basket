@@ -6,11 +6,20 @@ Object.getOwnPropertyNames(sprites_js).map(p => global[p] = sprites_js[p]);
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+// Constant that represents the art grid size
+const BITS = 16;
+
+// Scale factor
+const SCALE_FACTOR = 2;
+
+const CELL_SIZE = BITS * SCALE_FACTOR;
+
+// Dynamically size canvas based on engine constants before grid calculations
+canvas.width = CELL_SIZE * (COLS + 1);
+canvas.height = CELL_SIZE * ROWS;
+
 // Disable image smoothing for pixelated effect on ImageBitmaps
 ctx.imageSmoothingEnabled = false;
-
-// Constant that represents the art grid size
-const BITS = 16
 
 // Constant that represents the frame rate
 const FRAME_RATE = 240
