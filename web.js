@@ -119,25 +119,23 @@ const draw = sprites => state => {
       );
     }
   })
-  WALLS[1].forEach(position => drawImageBitmapSprite(sprites["BASKET"])(position));
+  WALLS[1].forEach(drawImageBitmapSprite(sprites["BASKET"]));
   
   // Masks for berry bushes
-  BERRY_MASKS[0].forEach(position => drawImageBitmapSprite(sprites["BLUEBERRY"])(position));
-  BERRY_MASKS[1].forEach(position => drawImageBitmapSprite(sprites["RASPBERRY"])(position));
+  BERRY_MASKS[0].forEach(drawImageBitmapSprite(sprites["BLUEBERRY"]));
+  BERRY_MASKS[1].forEach(drawImageBitmapSprite(sprites["RASPBERRY"]));
 
   // Draw apples
-  state.apples.forEach(position => drawImageBitmapSprite(sprites["APPLE"])(position));
+  state.apples.forEach(drawImageBitmapSprite(sprites["APPLE"]));
 
   // Draw eggs
-  state.eggs.forEach(position => drawImageBitmapSprite(sprites["EGG"])(position));
+  state.eggs.forEach(drawImageBitmapSprite(sprites["EGG"]));
 
   // Draw snake
   drawImageBitmapSprite(sprites["SNAKE"])(state.snake[0]);
 
   // Draw birds
-  ["EAGLE", "SECY", "GUINE", "OWL"].forEach((birdName, birdIndex) => {
-    drawBird(state)(sprites)(birdName, birdIndex);
-  });
+  ["EAGLE", "SECY", "GUINE", "OWL"].forEach(drawBird(state)(sprites));
 }
 
 // Game loop update
