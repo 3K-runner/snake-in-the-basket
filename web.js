@@ -37,8 +37,8 @@ const GRID_HEIGHT = Math.round(CANVAS_HEIGHT / ROWS);
 // Position helpers
 // for entire square
 // -Takes a coordinate and resizes it for the canvas
-const x = col => Math.round(col * GRID_WITH)
-const y = row => Math.round(row * GRID_HEIGHT)
+const x = col => Math.round(col * GRID_WITH);
+const y = row => Math.round(row * GRID_HEIGHT);
 
 // Draws a ImageBitmap sprite on a position
 const drawImageBitmapSprite = sprite => position => {
@@ -53,7 +53,7 @@ const drawBird = state => sprites => (birdName, birdIndex) => {
   const birdCoord = state.birds[birdIndex];
 
   // Draw the main sprite
-  drawImageBitmapSprite(sprites[birdName])(birdCoord)
+  drawImageBitmapSprite(sprites[birdName])(birdCoord);
   // Add the mask if frightened
   if (isFrightened(state)(birdIndex)){
     drawImageBitmapSprite(sprites[birdName+"SCARED"])(birdCoord);
@@ -63,11 +63,11 @@ const drawBird = state => sprites => (birdName, birdIndex) => {
 // Game loop draw
 const draw = sprites => state => {
   // clear
-  ctx.fillStyle = 'rgb(0, 0, 0)'
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  ctx.fillStyle = 'rgb(0, 0, 0)';
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   
   // Draw lives
-  state.lives.map(drawImageBitmapSprite(sprites["LIVE"]));
+  state.lives.forEach(position => drawImageBitmapSprite(sprites["LIVE"])(position));
 
   // Check crash/loose or win game states before drawing:
   // - Paths
@@ -87,22 +87,22 @@ const draw = sprites => state => {
   // add win
   if ((state.apples.length == 0) && (state.eggs.length == 0)){
     // If all apples have been collected, the screen flashes green
-    ctx.fillStyle = 'rgb(0,255,0)'
+    ctx.fillStyle = 'rgb(0,255,0)';
     ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT);
 
     return ;
   }
 
   // draw paths
-  ctx.fillStyle = 'rgb(96, 64, 32)'
-  ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT)
+  ctx.fillStyle = 'rgb(96, 64, 32)';
+  ctx.fillRect(0, 0, x(COLS), CANVAS_HEIGHT);
   
   // draw maze
   // - Walls have padding (visual) by default.
   // - Join fill is added to the wall if:
   //   - Wall exists north of it: WALL_UP_FILL
   //   - Wall exists west of it: WALL_SIDE_FILL
-  WALLS[0].map(p1 => {
+  WALLS[0].forEach(p1 => {
     const findPosition = position => WALLS[0].findIndex(p => p.x === position.x && p.y === position.y) !== -1;
     // Main wall
     drawImageBitmapSprite(sprites["WALL"])(p1);
@@ -110,33 +110,34 @@ const draw = sprites => state => {
     // Add wall fills to connect to other walls
     if (findPosition(makeMove(p1)(NORTH))) {
       drawImageBitmapSprite(sprites["WALL_UP_FILL"])(
-        makeMove(p1)({ x: 0, y: -1/2 })
+        makeMove(p1)({ x: 0, y: -1/2 });
       )
     }
     if (findPosition(makeMove(p1)(WEST))) {
       drawImageBitmapSprite(sprites["WALL_SIDE_FILL"])(
-        makeMove(p1)({ x: -1/2, y: 0 })
+        makeMove(p1)({ x: -1/2, y: 0 });
       )
     }
   })
-  WALLS[1].map(drawImageBitmapSprite(sprites["BASKET"]))
+  WALLS[1].forEach(position => drawImageBitmapSprite(sprites["BASKET"])(position));
+  
   // Masks for berry bushes
-  BERRY_MASKS[0].map(drawImageBitmapSprite(sprites["BLUEBERRY"]))
-  BERRY_MASKS[1].map(drawImageBitmapSprite(sprites["RASPBERRY"]))
+  BERRY_MASKS[0].forEach(position => drawImageBitmapSprite(sprites["BLUEBERRY"])(position));
+  BERRY_MASKS[1].forEach(position => drawImageBitmapSprite(sprites["RASPBERRY"])(position));
 
   // Draw apples
-  state.apples.map(drawImageBitmapSprite(sprites["APPLE"]));
+  state.apples.forEach(position => drawImageBitmapSprite(sprites["APPLE"])(position));
 
   // Draw eggs
-  state.eggs.map(drawImageBitmapSprite(sprites["EGG"]));
+  state.eggs.forEach(position => drawImageBitmapSprite(sprites["EGG"])(position));
 
   // Draw snake
   drawImageBitmapSprite(sprites["SNAKE"])(state.snake[0]);
 
   // Draw birds
-  ["EAGLE", "SECY", "GUINE", "OWL"].map(
-    drawBird(state)(sprites)
-  );
+  ["EAGLE", "SECY", "GUINE", "OWL"].forEach(birdName => {
+    drawBird(state)(sprites)(birdName);
+  });
 }
 
 // Game loop update
@@ -163,7 +164,7 @@ window.addEventListener('keydown', e => {
   keyBidings.reduce((acc, keys) => {
     const moveIndex = keys.indexOf(e.key.toLowerCase());
     return (moveIndex != -1) ? acc.concat([keyPattern[moveIndex]]) : acc;
-  }, []).map(move => {
+  }, []).forEach(move => {
     state = enqueue(state, move);
   });
 });

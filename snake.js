@@ -1,16 +1,16 @@
 const base = require('./base')
-Object.getOwnPropertyNames(base).map(p => global[p] = base[p])
+Object.getOwnPropertyNames(base).map(p => global[p] = base[p]);
 
 // Constants 
 // maze size
-const COLS  = 20
-const ROWS  = 14
+const COLS  = 20;
+const ROWS  = 14;
 // movement 
-const NORTH = { x: 0, y:-1 } 
-const SOUTH = { x: 0, y: 1 } 
-const EAST  = { x: 1, y: 0 } 
-const WEST  = { x:-1, y: 0 }
-const STOP  = { x: 0, y: 0 } // Move Stop
+const NORTH = { x: 0, y:-1 };
+const SOUTH = { x: 0, y: 1 };
+const EAST  = { x: 1, y: 0 };
+const WEST  = { x:-1, y: 0 };
+const STOP  = { x: 0, y: 0 }; // Move Stop
 // position
 const WALLS  = [
   // Bush walls
@@ -97,9 +97,9 @@ const WALLS  = [
   [{ x: 7, y: 5 }, { x: 8, y: 5 }, { x:11, y: 5 }, { x:12, y: 5 }, 
    { x: 8, y: 6 }, { x:11, y: 6 }, { x: 8, y: 7 }, { x: 9, y: 7 }, 
    { x:10, y: 7 }, { x:11, y: 7 }]                                         
-]
+];
 const INSIDE_BASKET = [{ x: 9, y: 5 }, { x:10, y: 5 },
-                       { x: 9, y: 6 }, { x:10, y: 6 }]
+                       { x: 9, y: 6 }, { x:10, y: 6 }];
 const BERRY_MASKS = [
   // Blueberry
   [{ x: 4, y: 0 }, { x: 5, y: 3 }, { x: 4, y: 0 }, { x:17, y: 5 },
@@ -108,7 +108,7 @@ const BERRY_MASKS = [
   // Raspberry
   [{ x:16, y: 0 }, { x: 1, y: 5 }, { x: 6, y: 7 }, { x: 14, y: 3 },
    { x:14, y:10 }, { x: 6, y:13 }]
-]
+];
 const START_APPLES = [
    { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 },
    { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 8, y: 1 },
@@ -142,98 +142,98 @@ const START_APPLES = [
    { x: 5, y:12 }, { x: 6, y:12 }, { x: 7, y:12 }, { x: 8, y:12 },
    { x: 9, y:12 }, { x:10, y:12 }, { x:11, y:12 }, { x:12, y:12 },
    { x:13, y:12 }, { x:14, y:12 }, { x:15, y:12 }, { x:16, y:12 }, 
-   { x:17, y:12 }, { x:18, y:12 }]
+   { x:17, y:12 }, { x:18, y:12 }];
                 
 const START_EGGS   = [{ x: 1, y: 4 }, { x: 1, y:10 }, 
-                      { x:18, y: 4 }, { x:18, y:10 }]
+                      { x:18, y: 4 }, { x:18, y:10 }];
 
-const START_SNAKE  = [{ x: 9, y: 8 }] // Starting position
+const START_SNAKE  = [{ x: 9, y: 8 }]; // Starting position
 
 const START_BIRDS  = [{ x: 9, y: 5 }, 
                       { x:10, y: 6 }, 
                       { x: 9, y: 6 },
-                      { x:10, y: 5 }]
+                      { x:10, y: 5 }];
 
 const START_LIVES  = [{ x:20, y: 1 },
-                      { x:20, y: 0 }]
+                      { x:20, y: 0 }];
 
 const SCATTER_TARGETS = [{ x:20, y: 0 }, 
                          { x:20, y:15 }, 
                          { x:-1, y:15 },
-                         { x:-1, y: 0 }]
+                         { x:-1, y: 0 }];
 
 // Point operation
 const pointEqual = position1 => position2 => (position1.x == position2.x 
                                               && 
-                                              position1.y == position2.y)
+                                              position1.y == position2.y);
 
 // Scale move by a factor
 const scaleMove  = move => factor => ({
   x: move.x * factor,
   y: move.y * factor
-})
+});
 
 // Returns a random position inside the game limits
 const randomPosition = () => ({
   x: randomNumber(0)(COLS - 1),
   y: randomNumber(0)(ROWS - 1)
-})
+});
 
 // Helper to map over birds
-const mapFromBirdsList = func => START_BIRDS.map((_, i) => func(i))
+const mapFromBirdsList = func => START_BIRDS.map((_, i) => func(i));
 
 // Boolean tests
 // -foods
-const wontEat          = state => p => !pointEqual(nextBite(state))(p)
-const eggWillBeEaten   = state => state.eggs.some(pointEqual(nextBite(state))) 
+const wontEat          = state => p => !pointEqual(nextBite(state))(p);
+const eggWillBeEaten   = state => state.eggs.some(pointEqual(nextBite(state)));
 // -snake state
 // Check if any bird will eat the snake
 const willSnakeBeEaten = state => mapFromBirdsList(index => 
-  isFrightened(state)(index) 
+  isFrightened(state)(index)
     ? false
     : willBirdBeEaten(state)(index)
-).some(a => a)
+).some(a => a);
 // -bird states
 const willBirdBeEaten = state => i =>
   (pointEqual(nextBite(state))(state.birds[i])
     &&
     pointEqual(nextBeak(state)(i))(state.snake[0]))
   || 
-  pointEqual(state.snake[0])(state.birds[i])
-const isFrightened    = state => i => (state.frightened[i] != 0)
-const isFrightOver    = state => i => (state.timegame - state.frightened[i]) > 15
+  pointEqual(state.snake[0])(state.birds[i]);
+const isFrightened    = state => i => (state.frightened[i] != 0);
+const isFrightOver    = state => i => (state.timegame - state.frightened[i]) > 15;
 // Bird waits before it starts moving in a new turn
-const isTimeToPeck    = state => i => (state.timegame >= (i * 10))
+const isTimeToPeck    = state => i => (state.timegame >= (i * 10));
 // Alternates scatter and chase every 35 game ticks 
-const areBirdsInScatterMode = state => ((Math.trunc(state.timegame / 35) % 2) == 0)
+const areBirdsInScatterMode = state => ((Math.trunc(state.timegame / 35) % 2) == 0);
 // -movement and position
-const willAvoidMaze  = p => !(WALLS.flat().some(pointEqual(p)))
-const isInsideBasket = p => INSIDE_BASKET.some(pointEqual(p))
+const willAvoidMaze  = p => !(WALLS.flat().some(pointEqual(p)));
+const isInsideBasket = p => INSIDE_BASKET.some(pointEqual(p));
 // Birds cant turn around
 const notOpositeMove = move1 => move2 =>
-  (move1.x + move2.x != 0) || (move1.y + move2.y != 0)
+  (move1.x + move2.x != 0) || (move1.y + move2.y != 0);
 // -game states
 const gameWaiting   = state => (pointEqual(state.moves[0])(STOP)
                                 &&
-                                state.moves.length == 1)
-const gameLost      = state => (state.lives.length == 0)
-const gameWon       = state => (state.apples.length == 0 && state.eggs.length == 0)
+                                state.moves.length == 1);
+const gameLost      = state => (state.lives.length == 0);
+const gameWon       = state => (state.apples.length == 0 && state.eggs.length == 0);
 
 // Functions that return updated states
 // -moves (snake movement)
-const nextMoves = state => (state.moves.length > 1) ? dropFirst(state.moves) : state.moves
+const nextMoves = state => (state.moves.length > 1) ? dropFirst(state.moves) : state.moves;
 // Adjust position within the game limits
 const adjustPosition = position => ({
   x: adjustInterval(COLS)(position.x),
   y: adjustInterval(ROWS)(position.y)
-})
+});
 // -snake
-const nextBite  = state => adjustPosition(makeMove(state.snake[0])(state.moves[0]))
+const nextBite  = state => adjustPosition(makeMove(state.snake[0])(state.moves[0]));
 const nextSnake = state => willSnakeBeEaten(state)
   ? []
   : (willAvoidMaze(nextBite(state))
     ? [nextBite(state)]
-    : state.snake)
+    : state.snake);
 // -pecks (bird movement)
 const nextPeck = state => i => {
   // Preference in this order,
@@ -246,9 +246,9 @@ const nextPeck = state => i => {
   
   const targetToUse = isFrightened(state)(i)
     ? randomPosition()
-    : (areBirdsInScatterMode(state) 
+    : (areBirdsInScatterMode(state)
       ? SCATTER_TARGETS[i]
-      : chaseTarget(state)(i))
+      : chaseTarget(state)(i));
     
   // Orders the movements according to 
   // the distance from the bird to the target
@@ -258,7 +258,7 @@ const nextPeck = state => i => {
     // If the bird is cornered, it will turn around
     : (optionsPeck3.length > 0
       ? optionsPeck3
-      : scaleMove(state.pecks[i])(-1))
+      : scaleMove(state.pecks[i])(-1));
 
   // Avoid getting stuck in the basket
   if (isInsideBasket(state.birds[i]) && !isFrightened(state)(i)) {
@@ -298,7 +298,7 @@ const bird3Target = state => index => {
   //   but goes to its scatter target if close
 
   // Calculates the distance
-  const radiusPeck = distance(state.snake[0])(state.birds[index])
+  const radiusPeck = distance(state.snake[0])(state.birds[index]);
   
   return (radiusPeck <= 10) 
     ? SCATTER_TARGETS[index]
@@ -308,45 +308,45 @@ const bird4Target = state => index => {
   // General movement rule:
   //   Tries to assist the bird with the index
   //   by flanking the snake
-  const target1 = makeMove(state.snake[0])(offsetMoveIfNorth(state.moves[0]))
-  const target2 = state.birds[index]
+  const target1 = makeMove(state.snake[0])(offsetMoveIfNorth(state.moves[0]));
+  const target2 = state.birds[index];
   
-  return makeMove(scaleMove(target1)(2))(scaleMove(target2)(-1))
+  return makeMove(scaleMove(target1)(2))(scaleMove(target2)(-1));
 }
-const nextPecks = state => mapFromBirdsList(nextPeck(state))
+const nextPecks = state => mapFromBirdsList(nextPeck(state));
 // -birds state
-const nextBeak = state => i => adjustPosition(makeMove(state.birds[i])(nextPeck(state)(i)))
+const nextBeak = state => i => adjustPosition(makeMove(state.birds[i])(nextPeck(state)(i)));
 const nextBird = state => i => (willBirdBeEaten(state)(i) && isFrightened(state)(i))
   ? START_BIRDS[i]
   : (isTimeToPeck(state)(i)
     ? nextBeak(state)(i)
-    : state.birds[i])
-const nextBirds = state => mapFromBirdsList(nextBird(state))
+    : state.birds[i]);
+const nextBirds = state => mapFromBirdsList(nextBird(state));
 // -frightened state
 const nextFright = state => i => 
   (isFrightOver(state)(i) || willBirdBeEaten(state)(i))
   ? 0
-  : state.frightened[i]
+  : state.frightened[i];
 const nextFrightened = state => {
   // If an egg will be eaten,
   // all birds become frightened
   const nextTimeFunction = eggWillBeEaten(state)
     ? (_ => state.timegame)
-    : nextFright(state)
+    : nextFright(state);
 
-  return mapFromBirdsList(nextTimeFunction)
+  return mapFromBirdsList(nextTimeFunction);
 }
 // -apples state
-const nextApple = state => state.apples.filter(wontEat(state))
+const nextApple = state => state.apples.filter(wontEat(state));
 // -eggs state
-const nextEgg   = state => state.eggs.filter(wontEat(state))
+const nextEgg   = state => state.eggs.filter(wontEat(state));
 // -lives state
 const nextLives = state => state.lives.length > 0
   ? dropFirst(state.lives)
-  : []
+  : [];
 
 // -time game state
-const nextTimeGame  = state => (state.timegame + 1)
+const nextTimeGame  = state => (state.timegame + 1);
 
 // Initial state
 const initialState = () => ({
@@ -359,7 +359,7 @@ const initialState = () => ({
   eggs:       START_EGGS,
   timegame:   0,
   lives:      START_LIVES
-})
+});
 
 // Bird eats snake state
 const eatenState = state => ({
@@ -372,7 +372,7 @@ const eatenState = state => ({
   eggs:       state.eggs,
   timegame:   0,
   lives:      nextLives(state)
-})
+});
 
 // Usual next state
 const basicNextState = state => ({
@@ -385,7 +385,7 @@ const basicNextState = state => ({
   eggs:       nextEgg(state),
   timegame:   nextTimeGame(state),
   lives:      state.lives
-})
+});
 
 // Returns next game turn 
 const next = state => state.snake.length == 0
@@ -395,9 +395,10 @@ const next = state => state.snake.length == 0
     : eatenState(state))           
   : (gameWon(state) || gameWaiting(state)        
     ? initialState()
-    : basicNextState(state))
+    : basicNextState(state));
 
-const enqueue = (state, move) => (state.moves.length < 4) ? merge(state)({ moves: state.moves.concat([move]) })
-  : state
+const enqueue = (state, move) => (state.moves.length < 4)
+  ? merge(state)({ moves: state.moves.concat([move]) })
+  : state;
 
 module.exports = { COLS, ROWS, EAST, NORTH, SOUTH, WEST, WALLS, BERRY_MASKS, initialState, makeMove, enqueue, next }
