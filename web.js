@@ -3,8 +3,8 @@ Object.getOwnPropertyNames(snake_js).map(p => global[p] = snake_js[p]);
 const sprites_js = require("./sprites");
 Object.getOwnPropertyNames(sprites_js).map(p => global[p] = sprites_js[p]);
 
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext('2d')
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
 // Constant that represents the art grid size
 const BITS = 16;
@@ -12,7 +12,7 @@ const BITS = 16;
 // Scale factor
 const SCALE_FACTOR = 2;
 
-const CELL_SIZE = BITS * SCALE_FACTOR;
+const CELL_SIZE = Math.round(BITS * SCALE_FACTOR);
 
 // Dynamically size canvas based on engine constants before grid calculations
 canvas.width = CELL_SIZE * (COLS + 1);
@@ -22,22 +22,22 @@ canvas.height = CELL_SIZE * ROWS;
 ctx.imageSmoothingEnabled = false;
 
 // Constant that represents the frame rate
-const FRAME_RATE = 240
+const FRAME_RATE = 240;
 
 // Mutable state
-let state = initialState()
+let state = initialState();
 
 // Canvas dimensions
-const CANVAS_WIDTH  = canvas.width;
-const CANVAS_HEIGHT = canvas.height;
+const CANVAS_WIDTH = Number(canvas.width);
+const CANVAS_HEIGHT = Number(canvas.height);
 // Size of each grid cell
-const GRID_WITH   = Math.round(CANVAS_WIDTH / (COLS + 1));
-const GRID_HEIGHT = Math.round(CANVAS_HEIGHT / ROWS);
+const GRID_WIDTH = CELL_SIZE;
+const GRID_HEIGHT = CELL_SIZE;
 
 // Position helpers
 // for entire square
 // -Takes a coordinate and resizes it for the canvas
-const x = col => Math.round(col * GRID_WITH);
+const x = col => Math.round(col * GRID_WIDTH);
 const y = row => Math.round(row * GRID_HEIGHT);
 
 // Draws a ImageBitmap sprite on a position
@@ -45,7 +45,7 @@ const drawImageBitmapSprite = sprite => position => {
   ctx.drawImage(
 	  sprite,
 	  x(position.x), y(position.y),
-	  GRID_WITH, GRID_HEIGHT
+    GRID_WIDTH, GRID_HEIGHT
   );
 }
 
@@ -110,13 +110,13 @@ const draw = sprites => state => {
     // Add wall fills to connect to other walls
     if (findPosition(makeMove(p1)(NORTH))) {
       drawImageBitmapSprite(sprites["WALL_UP_FILL"])(
-        makeMove(p1)({ x: 0, y: -1/2 });
-      )
+        makeMove(p1)({ x: 0, y: -0.5 })
+      );
     }
     if (findPosition(makeMove(p1)(WEST))) {
       drawImageBitmapSprite(sprites["WALL_SIDE_FILL"])(
-        makeMove(p1)({ x: -1/2, y: 0 });
-      )
+        makeMove(p1)({ x: -0.5, y: 0 })
+      );
     }
   })
   WALLS[1].forEach(position => drawImageBitmapSprite(sprites["BASKET"])(position));
@@ -135,8 +135,8 @@ const draw = sprites => state => {
   drawImageBitmapSprite(sprites["SNAKE"])(state.snake[0]);
 
   // Draw birds
-  ["EAGLE", "SECY", "GUINE", "OWL"].forEach(birdName => {
-    drawBird(state)(sprites)(birdName);
+  ["EAGLE", "SECY", "GUINE", "OWL"].forEach((birdName, birdIndex) => {
+    drawBird(state)(sprites)(birdName, birdIndex);
   });
 }
 
