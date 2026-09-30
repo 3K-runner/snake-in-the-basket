@@ -261,7 +261,11 @@ const nextPeck = state => i => {
       : scaleMove(state.pecks[i])(-1));
 
   // Avoid getting stuck in the basket
-  if (isInsideBasket(state.birds[i]) && !isFrightened(state)(i)) {
+  if (
+    isInsideBasket(state.birds[i]) &&
+    !isFrightened(state)(i) &&
+    !isInsideBasket(state.snake[0])
+  ) {
     return NORTH;
   }
 
